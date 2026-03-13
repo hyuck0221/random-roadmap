@@ -3,6 +3,9 @@ import type { GameStore, GameSettings } from '../types/game';
 import { getRandomLocation } from '../data/locations';
 import { haversineDistance, calculateScore } from '../utils/haversine';
 
+const ZONE_COUNT = 37; // ZONES 배열 크기
+const HISTORY_SIZE = Math.floor(ZONE_COUNT / 2);
+
 const DEFAULT_SETTINGS: GameSettings = {
   radiusMeters: 50,
   timeLimitSeconds: null,
@@ -19,6 +22,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   distanceMeters: null,
   score: null,
   timeElapsed: 0,
+  recentLocationNames: [],
 
   updateSettings: (newSettings) =>
     set((state) => ({
@@ -26,7 +30,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
     })),
 
   startGame: () => {
-    const location = getRandomLocation();
+    const { recentLocationNames } = get();
+    const location = getRandomLocation(recentLocationNames);
+    const updatedHistory = [location.name, ...recentLocationNames].slice(0, HISTORY_SIZE);
     set({
       phase: 'game',
       currentLocation: location,
@@ -34,7 +40,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
       distanceMeters: null,
       score: null,
       timeElapsed: 0,
+      recentLocationNames: updatedHistory,
     });
+  },
+
+  // 파노라마 데이터 없을 때 같은 존 내 다른 좌표로 재시도
+  retryLocation: () => {
+    const { recentLocationNames, currentLocation } = get();
+    // 현재 존 이름 유지하되 좌표만 새로 뽑음 (존 이름은 히스토리에 이미 있음)
+    const location = getRandomLocation(
+      currentLocation ? recentLocationNames.filter((n) => n !== currentLocation.name) : recentLocationNames
+    );
+    set({ currentLocation: location });
   },
 
   setGuessLocation: (lat, lng) =>
@@ -51,7 +68,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
       guessLocation.lng
     );
     const score = calculateScore(distanceMeters, settings.difficulty);
-
     set({ phase: 'result', distanceMeters, score });
   },
 

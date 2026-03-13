@@ -10,13 +10,19 @@ import './game.css';
 
 function GameContent() {
   const navigate = useNavigate();
-  const { currentLocation, settings, setGuessLocation, submitGuess } = useGameStore();
+  const { currentLocation, settings, setGuessLocation, submitGuess, retryLocation } = useGameStore();
   const [showModal, setShowModal] = useState(false);
   const [radiusFlash, setRadiusFlash] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     if (!currentLocation) navigate('/');
   }, [currentLocation, navigate]);
+
+  // 위치 바뀔 때마다 로딩 상태 초기화
+  useEffect(() => {
+    setIsSearching(false);
+  }, [currentLocation?.lat, currentLocation?.lng]);
 
   const onRadiusExceeded = useCallback(() => {
     setRadiusFlash(true);
@@ -24,8 +30,10 @@ function GameContent() {
   }, []);
 
   const onPanoError = useCallback(() => {
-    console.warn('파노라마 데이터 없음, 재시도 중...');
-  }, []);
+    setIsSearching(true);
+    // 잠깐 딜레이 후 새 위치 시도
+    setTimeout(() => retryLocation(), 300);
+  }, [retryLocation]);
 
   usePanorama({
     containerId: 'panorama',
@@ -51,6 +59,13 @@ function GameContent() {
       <div id="panorama" className="panorama-container" />
 
       <div className={`radius-flash ${radiusFlash ? 'active' : ''}`} />
+
+      {isSearching && (
+        <div className="searching-overlay">
+          <div className="searching-spinner" />
+          <span>로드뷰 탐색 중...</span>
+        </div>
+      )}
 
       <GameHUD onTimerExpire={handleTimerExpire} />
 

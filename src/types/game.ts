@@ -21,11 +21,13 @@ export interface GameState {
   distanceMeters: number | null;
   score: number | null;
   timeElapsed: number;
+  recentLocationNames: string[];
 }
 
 export interface GameStore extends GameState {
   updateSettings: (settings: Partial<GameSettings>) => void;
   startGame: () => void;
+  retryLocation: () => void;
   setGuessLocation: (lat: number, lng: number) => void;
   submitGuess: () => void;
   resetGame: () => void;

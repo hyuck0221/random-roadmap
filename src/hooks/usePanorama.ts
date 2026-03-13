@@ -83,6 +83,53 @@ export function usePanorama({
         }
       );
 
+      // 고속도로 라벨·비행기 아이콘 숨김
+      const hideStyle = document.createElement('style');
+      hideStyle.id = `pano-hide-${containerId}`;
+      hideStyle.textContent = `
+        /* 화살표 위 도로명 라벨 */
+        #${containerId} a span,
+        #${containerId} a p,
+        #${containerId} a em,
+        #${containerId} [class*="label"],
+        #${containerId} [class*="roadname"],
+        #${containerId} [class*="road_name"],
+        #${containerId} [class*="RoadName"],
+        #${containerId} [class*="LinkName"],
+        #${containerId} [class*="link_name"] {
+          display: none !important;
+        }
+        /* 비행기 아이콘 */
+        #${containerId} img[src*="airplane"],
+        #${containerId} img[src*="aircraft"],
+        #${containerId} img[src*="flight"],
+        #${containerId} img[src*="fly"],
+        #${containerId} [class*="airplane"],
+        #${containerId} [class*="aircraft"] {
+          display: none !important;
+        }
+      `;
+      document.head.appendChild(hideStyle);
+
+      // CSS 선택자로 안 잡히는 경우를 위해 MutationObserver로 img src 검사
+      const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const node of mutation.addedNodes) {
+            if (!(node instanceof HTMLElement)) continue;
+            node.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
+              const src = (img.src || img.getAttribute('src') || '').toLowerCase();
+              if (src.includes('air') || src.includes('plane') || src.includes('flight')) {
+                img.style.setProperty('display', 'none', 'important');
+              }
+            });
+          }
+        }
+      });
+      observer.observe(el, { childList: true, subtree: true });
+
+      // cleanup에서 정리할 수 있도록 ref에 저장
+      (el as HTMLElement & { _panoObserver?: MutationObserver })._panoObserver = observer;
+
       // 배경 클릭 → 가장 가까운 nav 요소로 포워딩
       el.addEventListener(
         'pointerdown',
@@ -134,8 +181,12 @@ export function usePanorama({
       if (radiusListener) window.naver.maps.Event.removeListener(radiusListener);
       if (statusListener) window.naver.maps.Event.removeListener(statusListener);
       panoRef.current = null;
-      const el = document.getElementById(containerId);
-      if (el) el.innerHTML = '';
+      const el = document.getElementById(containerId) as (HTMLElement & { _panoObserver?: MutationObserver }) | null;
+      if (el) {
+        el._panoObserver?.disconnect();
+        el.innerHTML = '';
+      }
+      document.getElementById(`pano-hide-${containerId}`)?.remove();
     };
   }, [containerId, lat, lng, radiusMeters, onError, onRadiusExceeded, enabled]);
 
