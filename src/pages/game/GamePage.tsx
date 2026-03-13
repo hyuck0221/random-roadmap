@@ -10,7 +10,7 @@ import './game.css';
 
 function GameContent() {
   const navigate = useNavigate();
-  const { currentLocation, settings, setGuessLocation, submitGuess, retryLocation } = useGameStore();
+  const { currentLocation, settings, setGuessLocation, submitGuess, retryLocation, setCurrentLocation } = useGameStore();
   const [showModal, setShowModal] = useState(false);
   const [radiusFlash, setRadiusFlash] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -33,6 +33,14 @@ function GameContent() {
       setIsSearching(false);
     }, 500);
   }, [retryLocation, isSearching]);
+
+  const onPositionChanged = useCallback((lat: number, lng: number) => {
+    if (!currentLocation) return;
+    // 실제 파노라마 위치가 초기 랜덤 위경도와 다를 수 있으므로 업데이트
+    if (currentLocation.lat !== lat || currentLocation.lng !== lng) {
+      setCurrentLocation({ ...currentLocation, lat, lng });
+    }
+  }, [currentLocation, setCurrentLocation]);
 
   // 안전장치: 4초 동안 로드뷰가 안 뜨면 에러로 간주하고 재시도
   useEffect(() => {
@@ -57,6 +65,7 @@ function GameContent() {
     radiusMeters: settings.radiusMeters,
     onError: onPanoError,
     onRadiusExceeded,
+    onPositionChanged,
     enabled: !!currentLocation,
   });
 

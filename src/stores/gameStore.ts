@@ -38,6 +38,9 @@ export const useGameStore = create<GameStore>()(
       setCenterPoint: (lat, lng) =>
         set({ centerPoint: { lat, lng } }),
 
+      setCurrentLocation: (location) =>
+        set({ currentLocation: location }),
+
       startGame: () => {
         const { recentLocationNames, settings, centerPoint } = get();
         

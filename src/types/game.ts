@@ -30,6 +30,7 @@ export interface GameState {
 export interface GameStore extends GameState {
   updateSettings: (settings: Partial<GameSettings>) => void;
   setCenterPoint: (lat: number, lng: number) => void;
+  setCurrentLocation: (location: Location) => void;
   startGame: () => void;
   retryLocation: () => void;
   setGuessLocation: (lat: number, lng: number) => void;
