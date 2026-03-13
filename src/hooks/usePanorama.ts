@@ -148,12 +148,30 @@ export function usePanorama({
       observer.observe(el, { childList: true, subtree: true });
       (el as any)._panoObserver = observer;
 
+      // 드래그 반전 및 배경 클릭 처리
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+      let startPan = 0;
+      let startTilt = 0;
+
       el.addEventListener('pointerdown', (e: PointerEvent) => {
         if (isSnappingRef.current) {
           e.stopPropagation();
           e.preventDefault();
           return;
         }
+
+        // 거울 모드일 때 드래그 반전 처리 시작
+        if ((window as any).isMirrorModeActive) {
+          isDragging = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          const currentPov = pano.getPov();
+          startPan = currentPov.pan;
+          startTilt = currentPov.tilt;
+        }
+
         const target = e.target as HTMLElement;
         if (target.tagName.toLowerCase() !== 'canvas') return;
 
@@ -182,6 +200,27 @@ export function usePanorama({
           closest.click();
         }
       }, { capture: true });
+
+      window.addEventListener('pointermove', (e: PointerEvent) => {
+        if (!isDragging || !pano || !(window as any).isMirrorModeActive) return;
+        
+        // 거울 모드: 좌우(pan)는 반전(dx * sensitivity), 상하(tilt)는 그대로(dy * sensitivity)
+        // dx와 dy를 통해 새로운 시야각을 계산
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        const sensitivity = 0.2; 
+        
+        const newPan = (startPan + dx * sensitivity) % 360;
+        // 상하 회전은 위로 끌면(dy < 0) 위를 봐야 함. 
+        // 기본 로드뷰는 위로 끌면 아래를 보게 되는데, 이를 사용자가 직관적으로 느끼게 보정
+        const newTilt = Math.max(-90, Math.min(90, startTilt + dy * sensitivity));
+        
+        pano.setPov({ pan: newPan, tilt: newTilt, fov: pano.getPov().fov });
+      });
+
+      window.addEventListener('pointerup', () => {
+        isDragging = false;
+      });
     });
 
     return () => {

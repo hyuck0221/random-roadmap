@@ -186,6 +186,22 @@ export function SettingsPanel() {
                 </>
               )}
 
+              {/* Mirror Mode toggle */}
+              <div className="setting-toggle-row">
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span className="setting-toggle-label">거울 세계 (좌우 반전)</span>
+                  <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>모든 것이 반대로 보여요!</span>
+                </div>
+                <label className="toggle-switch">
+                  <input
+                    type="checkbox"
+                    checked={settings.isMirrorMode}
+                    onChange={(e) => updateSettings({ isMirrorMode: e.target.checked })}
+                  />
+                  <span className="toggle-track" />
+                </label>
+              </div>
+
               {/* Radius */}
               <div className="setting-item">
                 <div className="setting-label">

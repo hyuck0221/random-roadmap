@@ -58,6 +58,11 @@ function GameContent() {
     return () => clearTimeout(timer);
   }, [currentLocation, isSearching, onPanoError]);
 
+  useEffect(() => {
+    (window as any).isMirrorModeActive = settings.isMirrorMode;
+    return () => { (window as any).isMirrorModeActive = false; };
+  }, [settings.isMirrorMode]);
+
   usePanorama({
     containerId: 'panorama',
     lat: currentLocation?.lat ?? 37.5665,
@@ -80,7 +85,7 @@ function GameContent() {
 
   return (
     <div className="game-page">
-      <div id="panorama" className="panorama-container" />
+      <div id="panorama" className={`panorama-container ${settings.isMirrorMode ? 'mirror-mode' : ''}`} />
 
       <div className={`radius-flash ${radiusFlash ? 'active' : ''}`} />
 

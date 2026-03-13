@@ -6,6 +6,7 @@ export interface GameSettings {
   showMinimap: boolean;
   isDetailedMode: boolean;
   detailedModeRadiusMeters: number;
+  isMirrorMode: boolean;
 }
 
 export interface Location {

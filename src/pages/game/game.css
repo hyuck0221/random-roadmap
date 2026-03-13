@@ -8,6 +8,11 @@
 .panorama-container {
   position: absolute;
   inset: 0;
+  transition: transform 0.3s;
+}
+
+.panorama-container.mirror-mode {
+  transform: scaleX(-1);
 }
 
 .searching-overlay {

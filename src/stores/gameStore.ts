@@ -15,6 +15,7 @@ const DEFAULT_SETTINGS: GameSettings = {
   showMinimap: false,
   isDetailedMode: false,
   detailedModeRadiusMeters: 1000,
+  isMirrorMode: false,
 };
 
 export const useGameStore = create<GameStore>()(
