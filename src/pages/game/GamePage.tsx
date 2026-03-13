@@ -19,21 +19,36 @@ function GameContent() {
     if (!currentLocation) navigate('/');
   }, [currentLocation, navigate]);
 
-  // 위치 바뀔 때마다 로딩 상태 초기화
-  useEffect(() => {
-    setIsSearching(false);
-  }, [currentLocation?.lat, currentLocation?.lng]);
-
   const onRadiusExceeded = useCallback(() => {
     setRadiusFlash(true);
     setTimeout(() => setRadiusFlash(false), 400);
   }, []);
 
   const onPanoError = useCallback(() => {
+    if (isSearching) return; // 이미 탐색 중이면 중복 호출 방지
     setIsSearching(true);
     // 잠깐 딜레이 후 새 위치 시도
-    setTimeout(() => retryLocation(), 300);
-  }, [retryLocation]);
+    setTimeout(() => {
+      retryLocation();
+      setIsSearching(false);
+    }, 500);
+  }, [retryLocation, isSearching]);
+
+  // 안전장치: 4초 동안 로드뷰가 안 뜨면 에러로 간주하고 재시도
+  useEffect(() => {
+    if (!currentLocation || isSearching) return;
+
+    const timer = setTimeout(() => {
+      const el = document.getElementById('panorama');
+      // 캔버스나 관련 요소가 생성되지 않았거나, 높이가 0이면 로드 실패로 간주
+      if (el && el.innerHTML === '') {
+        console.warn('Panorama load timeout - retrying...');
+        onPanoError();
+      }
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, [currentLocation, isSearching, onPanoError]);
 
   usePanorama({
     containerId: 'panorama',

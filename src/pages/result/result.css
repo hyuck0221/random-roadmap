@@ -33,6 +33,22 @@
   margin-bottom: 4px;
 }
 
+.detailed-mode-badge-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.detailed-mode-badge {
+  background: rgba(255, 215, 0, 0.1);
+  color: #ffd700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
 .result-card {
   background: var(--bg-card);
   border-radius: var(--radius-md);

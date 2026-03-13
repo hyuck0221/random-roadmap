@@ -18,9 +18,17 @@ export function haversineDistance(
   return EARTH_RADIUS_M * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-export function calculateScore(distanceMeters: number, difficulty: 'easy' | 'normal' | 'hard'): number {
+export function calculateScore(
+  distanceMeters: number, 
+  difficulty: 'easy' | 'normal' | 'hard',
+  isDetailedMode: boolean = false
+): number {
   const multiplier = difficulty === 'easy' ? 0.8 : difficulty === 'hard' ? 1.5 : 1.0;
-  const base = Math.round(5000 * Math.exp(-distanceMeters / 2000));
+  
+  // 세밀 모드에서는 감쇠 상수를 작게 하여 거리에 더 민감하게 반응 (2000m -> 50m)
+  const decayConstant = isDetailedMode ? 50 : 2000;
+  const base = Math.round(5000 * Math.exp(-distanceMeters / decayConstant));
+  
   return Math.round(base * multiplier);
 }
 

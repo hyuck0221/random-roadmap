@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../../stores/gameStore';
@@ -6,9 +7,16 @@ import './home.css';
 
 export function HomePage() {
   const navigate = useNavigate();
-  const startGame = useGameStore((s) => s.startGame);
+  const { startGame, settings, centerPoint } = useGameStore();
+  const [error, setError] = useState<string | null>(null);
 
   const handleStart = () => {
+    if (settings.isDetailedMode && !centerPoint) {
+      setError('세밀 모드에서는 먼저 중심점을 선택해야 합니다!');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    setError(null);
     startGame();
     navigate('/game');
   };
@@ -39,6 +47,15 @@ export function HomePage() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
+          {error && (
+            <motion.div 
+              className="home-error-msg"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              ⚠️ {error}
+            </motion.div>
+          )}
           <button className="home-start-btn" onClick={handleStart}>
             게임 시작 🎮
           </button>

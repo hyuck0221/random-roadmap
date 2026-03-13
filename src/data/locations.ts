@@ -78,6 +78,23 @@ export function getRandomLocation(recentNames: string[] = []): Location {
   };
 }
 
+export function getRandomLocationNear(center: { lat: number, lng: number }, radiusMeters: number): Location {
+  const DEGREE_METERS = 111320;
+  
+  const r = (radiusMeters / DEGREE_METERS) * Math.sqrt(Math.random());
+  const angle = Math.random() * 2 * Math.PI;
+  
+  const latOffset = r * Math.sin(angle);
+  const lngOffset = (r * Math.cos(angle)) / Math.cos(center.lat * Math.PI / 180);
+
+  return {
+    lat: center.lat + latOffset,
+    lng: center.lng + lngOffset,
+    name: '세밀 모드',
+    description: '선택한 위치 근처'
+  };
+}
+
 export const LOCATIONS = ZONES.map((z) => ({
   lat: z.lat,
   lng: z.lng,

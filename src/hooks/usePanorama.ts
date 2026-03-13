@@ -76,8 +76,10 @@ export function usePanorama({
         pano,
         'pano_status_changed',
         (...args: unknown[]) => {
-          const status = args[0] as string;
-          if (status === 'ERROR') {
+          const status = args[0] as any;
+          // OK가 아니면 (ERROR, ZERO_RESULTS 등) 모두 에러로 처리하여 재시도 유도
+          if (status !== (window.naver.maps as any).PanoramaStatus.OK) {
+            console.warn('Panorama status changed to:', status);
             onError?.();
           }
         }

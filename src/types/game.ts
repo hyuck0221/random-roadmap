@@ -4,6 +4,8 @@ export interface GameSettings {
   difficulty: 'easy' | 'normal' | 'hard';
   showCompass: boolean;
   showMinimap: boolean;
+  isDetailedMode: boolean;
+  detailedModeRadiusMeters: number;
 }
 
 export interface Location {
@@ -22,10 +24,12 @@ export interface GameState {
   score: number | null;
   timeElapsed: number;
   recentLocationNames: string[];
+  centerPoint: { lat: number; lng: number } | null;
 }
 
 export interface GameStore extends GameState {
   updateSettings: (settings: Partial<GameSettings>) => void;
+  setCenterPoint: (lat: number, lng: number) => void;
   startGame: () => void;
   retryLocation: () => void;
   setGuessLocation: (lat: number, lng: number) => void;

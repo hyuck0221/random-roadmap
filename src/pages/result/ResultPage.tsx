@@ -13,6 +13,7 @@ function ResultContent() {
     guessLocation,
     distanceMeters,
     score,
+    settings,
     startGame,
     resetGame,
   } = useGameStore();
@@ -128,6 +129,11 @@ function ResultContent() {
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
         >
+          {settings.isDetailedMode && (
+            <div className="detailed-mode-badge-wrap">
+              <span className="detailed-mode-badge">🎯 세밀 모드</span>
+            </div>
+          )}
           <h1 className="result-title">{getScoreComment()}</h1>
           <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
             {currentLocation.name}

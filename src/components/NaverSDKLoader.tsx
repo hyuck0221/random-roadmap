@@ -22,7 +22,7 @@ export function NaverSDKLoader({ children }: Props) {
     }
 
     const script = document.createElement('script');
-    script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${clientId}&submodules=panorama`;
+    script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${clientId}&submodules=panorama,geocoder`;
     script.async = true;
     script.onerror = () => setError(true);
     document.head.appendChild(script);
