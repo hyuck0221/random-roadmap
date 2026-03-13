@@ -69,7 +69,7 @@ export function useGuessMap({ containerId, initialCenter, initialZoom }: UseGues
     };
   }, [containerId]);
 
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<naver.maps.Service.GeocodeResponse['v2']['addresses']>([]);
   const [error, setError] = useState<string | null>(null);
 
   const reset = () => {

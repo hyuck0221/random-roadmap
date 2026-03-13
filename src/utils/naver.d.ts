@@ -87,12 +87,53 @@ declare namespace naver {
       pov?: { pan: number; tilt: number; fov: number };
     }
 
+    enum PanoramaStatus {
+      OK = 'OK',
+      ERROR = 'ERROR',
+      ZERO_RESULTS = 'ZERO_RESULTS',
+    }
+
     class Panorama {
       constructor(element: HTMLElement | string, options?: PanoramaOptions);
       setPosition(latlng: LatLng): void;
       getPosition(): LatLng;
       setPov(pov: { pan: number; tilt: number; fov?: number }): void;
       getPov(): { pan: number; tilt: number; fov: number };
+    }
+
+    namespace Service {
+      enum Status {
+        OK = 'OK',
+        ERROR = 'ERROR',
+      }
+
+      interface GeocodeOptions {
+        query: string;
+      }
+
+      interface GeocodeResponse {
+        v2: {
+          addresses: Array<{
+            x: string;
+            y: string;
+            roadAddress: string;
+            jibunAddress: string;
+            addressElements: Array<{
+              longName: string;
+              shortName: string;
+              types: string[];
+            }>;
+          }>;
+          meta: {
+            totalCount: number;
+          };
+        };
+      }
+
+      function geocode(
+        options: GeocodeOptions,
+        callback: (status: Status, response: GeocodeResponse) => void
+      ): void;
     }
 
     type MapEventListener = unknown;
@@ -112,6 +153,8 @@ declare namespace naver {
       Marker: typeof Marker;
       Polyline: typeof Polyline;
       Panorama: typeof Panorama;
+      PanoramaStatus: typeof PanoramaStatus;
+      Service: typeof Service;
       Event: typeof Event;
       LatLngBounds: typeof LatLngBounds;
       Point: typeof Point;

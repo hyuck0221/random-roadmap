@@ -47,10 +47,6 @@ const ZONES = [
   { lat: 33.25, lng: 126.56, r: 0.12, name: '서귀포' },
 ];
 
-function rand(min: number, max: number) {
-  return min + Math.random() * (max - min);
-}
-
 export function generateRandomLocation(): Location {
   const zone = ZONES[Math.floor(Math.random() * ZONES.length)];
   // 원형 균등 분포 (박스 샘플링보다 균일)
