@@ -1,0 +1,206 @@
+.game-page {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.panorama-container {
+  position: absolute;
+  inset: 0;
+}
+
+.game-hud {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.hud-timer {
+  background: rgba(15, 17, 23, 0.85);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  font-family: var(--font-en);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  backdrop-filter: blur(8px);
+  min-width: 80px;
+  text-align: center;
+}
+
+.hud-timer.warning {
+  color: var(--accent-danger);
+  border-color: var(--accent-danger);
+  animation: pulse-glow 1s ease-in-out infinite;
+}
+
+.hud-radius {
+  background: rgba(15, 17, 23, 0.85);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  backdrop-filter: blur(8px);
+}
+
+.hud-location {
+  background: rgba(15, 17, 23, 0.85);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  backdrop-filter: blur(8px);
+}
+
+.game-actions {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.guess-btn {
+  padding: 16px 40px;
+  background: var(--accent-primary);
+  color: #0f1117;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: var(--radius-lg);
+  border: none;
+  animation: pulse-glow 2s ease-in-out infinite;
+  transition: all var(--transition-normal);
+  white-space: nowrap;
+}
+
+.guess-btn:hover {
+  background: var(--accent-primary-hover);
+  transform: scale(1.05);
+}
+
+.radius-flash {
+  position: absolute;
+  inset: 0;
+  border: 6px solid var(--accent-danger);
+  border-radius: 0;
+  pointer-events: none;
+  z-index: 100;
+  animation: border-flash 0.4s ease-out;
+  opacity: 0;
+}
+
+.radius-flash.active {
+  animation: border-flash 0.4s ease-out forwards;
+}
+
+/* Map selector modal */
+.map-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.map-modal {
+  background: var(--bg-modal);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  width: 100%;
+  max-width: 700px;
+  overflow: hidden;
+  box-shadow: var(--shadow-modal);
+}
+
+.map-modal-header {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.map-modal-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.map-modal-header p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.map-modal-close {
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 20px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.map-modal-close:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.map-modal-map {
+  width: 100%;
+  height: 420px;
+}
+
+.map-modal-footer {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid var(--border-color);
+}
+
+.map-cancel-btn {
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  transition: all var(--transition-fast);
+}
+
+.map-cancel-btn:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.map-confirm-btn {
+  padding: 10px 24px;
+  background: var(--accent-primary);
+  color: #0f1117;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 700;
+  transition: all var(--transition-normal);
+}
+
+.map-confirm-btn:hover:not(:disabled) {
+  background: var(--accent-primary-hover);
+}
+
+.map-confirm-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
